@@ -8,12 +8,13 @@
 ## Architecture:
 Inside one project/namespace we have 3 internal services/applications and the route, who exosing our solution and managing level 7 trafic.
 
-
-| route admin.cna.com/     |  admin fe  | |
-| route admin.cna.com/api  |  admin be  | -- MongoDB |
-|                          |            |   same     |
-| route www.cna.com/api    |  prod be   | -- MongoDB |
-| route www.cna.com/       |  prod fe   | |
+| routes to | service name | db | 
+| --                 |         -- |         -- | 
+| admin.cna.com/     |  admin fe  |            |
+| admin.cna.com/api  |  admin be  | -- MongoDB |
+|                    |            |   same     |
+| www.cna.com/api    |  prod be   | -- MongoDB |
+| www.cna.com/       |  prod fe   |            |
 
 ## What we are using in OpenShift
 1. Internal container registry for storing our three images
