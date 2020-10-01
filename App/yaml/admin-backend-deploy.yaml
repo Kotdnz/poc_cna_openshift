@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-backend
+spec:
+  selector:
+    matchLabels:
+      app: admin-backend
+  template:
+    metadata:
+      labels:
+        app: admin-backend
+    spec:
+      containers:
+        - name: admin-backend
+          image: poc-cna-be:0.1
+          ports:
+            - containerPort: 8080
+              protocol: "TCP"
+          volumeMounts:
+          - name: config-volume
+            mountPath: /app/configs
+      volumes:
+        - name: config-volume
+          configMap:
+            name: admin-config
+  replicas: 1
+  triggers:
+    - type: ConfigChange 
+  strategy: 
+    type: RollingUpdate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-backend
+  labels:
+    app: admin-backend
+spec:
+  type: NodePort
+  selector:
+    app: admin-backend
+  ports:
+    - nodePort: 0
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+      name: http

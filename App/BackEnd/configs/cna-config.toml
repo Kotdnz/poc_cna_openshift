@@ -1,0 +1,14 @@
+# this config is an a Toml format
+# all parameters can be overwritted by ConfigMap
+
+# Binding address:port
+bind_addr = ":8080"
+
+# Available parameters: Client or Admin
+whoami = "Admin" 
+
+# MongoDb connection URI
+MongoURI = "mongodb://localhost:27017/"
+DBuser = "mongodb1"
+DBpass = "mongodb1"
+DBtable = "sampledb"

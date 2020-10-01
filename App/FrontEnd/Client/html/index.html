@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Basic DataGrid - CNAUsers Client Demo</title>
+    <link rel="stylesheet" type="text/css" href="themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="easyui/demo.css">
+    <script type="text/javascript" src="easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+</head>
+<body>
+    <h2>CNA Client Application - list of the users</h2>
+    <div style="margin:20px 0;"></div>
+    
+    <table class="easyui-datagrid" title="Users grid" style="width:700px;height:250px"
+            data-options="url:'api/get',fitColumns:true,singleSelect:true">
+        <thead>
+            <tr>
+                <th field="_id" width="50">ID</th>
+                <th field="firstname" width="50">First Name</th>
+                <th field="lastname" width="50">Last Name</th>
+                <th field="phone" width="50">Phone</th>
+                <th field="email" width="50">Email</th>
+            </tr>
+        </thead>
+    </table>
+ 
+</body>
+</html>
