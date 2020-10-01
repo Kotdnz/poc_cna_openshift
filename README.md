@@ -1,4 +1,4 @@
-# This repository contain the source files for POC - new applocation in OpenShift cluster.
+# This repository contains the source files for POC - new application in OpenShift cluster.
 ## Components:
 1. BackEnd golang application. We will use it on a two roles - as a client only and as a Server only. Purpose - emulate production and admin wing.
 2. Database for storing our test data MongoDB - OpenShift application launched from the OS Marketplace. Nothing special - create new and delate existed dicuments.
