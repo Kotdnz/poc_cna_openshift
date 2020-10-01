@@ -8,11 +8,12 @@
 ## Architecture:
 Inside one project/namespace we have 3 internal services/applications and the route, who exosing our solution and managing level 7 trafic.
 
-|  |  |  |
-| -- | -- | -- |
-| | \/ port 8080 to admin fe and be via /api \ | |
-| route-- |                    |-- MongoDB |
-| | \ prod 80 to production fe and be via /api / | |
+
+| route admin.cna.com/     |  admin fe  | |
+| route admin.cna.com/api  |  admin be  | -- MongoDB |
+|                          |            |   same     |
+| route www.cna.com/api    |  prod be   | -- MongoDB |
+| route www.cna.com/       |  prod fe   | |
 
 ## What we are using in OpenShift
 1. Internal container registry for storing our three images
@@ -24,20 +25,26 @@ Inside one project/namespace we have 3 internal services/applications and the ro
 - install [minishift](https://docs.okd.io/3.11/minishift/getting-started/installing.html)
 - run minishift
 - create the new project __myproject__
-- to check if all working properly create first application __MongoDB__ with the standard parameters and __sampledb__ as database 
-- to adjust the mongodb connect to pod 
-oc exec mongodb-2-8m88d -i -t -- bash -il
-login to mongo
-mongo 127.0.0.1:27017/$MONGODB_DATABASE -u $MONGODB_USER -p $MONGODB_PASSWORD
-
-
-- switch our docker to minishift reository 
+- to check if all working properly create first application __MongoDB__ with the following: __monogodb__ dbuser/dbpass, admin pass: __admin__ and __sampledb__ as database 
+Connect to pod via terminal and execute the following:
+mongo -u admin -p admin admin
+db.createUser({
+  user: "mongodb2",
+  pwd: "mongodb2",
+  roles: [
+    { role: "userAdmin", db: "sampledb" },
+    { role: "dbAdmin",   db: "sampledb" },
+    { role: "readWrite", db: "sampledb" }
+  ]
+});
+This is all with Mongo.
+- To continue the deploy switch our docker to minishift reository 
 <code><p>
 $ minishift docker-env<p>
 and execute all command in our shell. To verify -<p> 
 $ docker ps
 </code>
-- [build all our images to openshift](https://docs.okd.io/3.11/minishift/using/docker-daemon.html). Or use save and load to push. <p>
+- [build all our images to openshift](https://docs.okd.io/3.11/minishift/using/docker-daemon.html). Or use save and load to push - I'm using for this two terminal window. <p>
 We should yield the following in minishift repository
 
 |REPOSITORY|TAG|IMAGE ID|CREATED|SIZE|
@@ -45,7 +52,7 @@ We should yield the following in minishift repository
 |poc-cna-be    |      0.1       |          a49a4db8ffd8   |     30 hours ago   |     39.9MB|
 |cna-admin-fe  |      0.1       |          345aa5c56e56   |     30 hours ago    |    24.1MB|
 |cna-prod-fe   |      0.1       |          2a96f289fd7b   |     30 hours ago     |   24.1MB|
-
+We are ready.
 - login to oc as a developer
 <code>oc login -u developer -p developer</code>
 - create the configmaps for our backend - for admin and for prod
@@ -56,14 +63,26 @@ $ oc create configmap prod-config  --from-file=configs/cna-config.toml<p>
 </code>
 Amend in both files via web interface role, userpass what your specified during creating and in connection string replace the __localhost__ to mnongodb service name. Helpful command $ kubectl get services
 Check the result $ oc describe configmap admin-config
--- deploy our applications
+- deploy our applications
 cd yaml
-oc new-app --file=admin-backend-deploy.yaml
-oc new-app --file=prod-backend-deploy.yaml
-oc new-app --file=admin-frontend-deploy.yaml
-oc new-app --file=prod-frontend-deploy.yaml
+oc create -f admin-backend-deploy.yaml
+oc create -f prod-backend-deploy.yaml
+oc create -f admin-frontend-deploy.yaml
+oc create -f prod-frontend-deploy.yaml
+- create our routes
+oc create -f routes-all.yaml
+- Cluster loadbalancer looking for name scpecific in routes - www.cna.com and admin.cna.com. Thus, we have to substitute this domain names to cluster IP.
+Edit /etc/hosts and add:
+#minishift
+192.168.99.103  admin.cna.com
+192.168.99.103  www.cna.com
 
-if something went wromg delete apps by the following command for axample
-oc delete all -l app=poc-cna-be
-
-to be continue...
+Finish.
+Lets check:
+(http://admin.cna.com) - should display data grid
+(http://admin.cna.com/api) - Display that we are Admin.
+(http://admin.cna.com/api/get) - json with all documents data
+the same for Prod
+(http://www.cna.com) - datagrid in readonly mode
+(http://www.cna.com/api) - Display that we are Client.
+(http://www.cna.com/api/get) - json with all documents data
