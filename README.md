@@ -26,7 +26,10 @@ Inside one project/namespace we have 3 internal services/applications and the ro
 - install [minishift](https://docs.okd.io/3.11/minishift/getting-started/installing.html)
 - run minishift
 - create the new project __myproject__
-- to check if all working properly create first application __MongoDB__ version __3.6__ with the following: __monogodb__ dbuser/dbpass, admin pass: __admin__ and __sampledb__ as database 
+- to check if all working properly create first application __MongoDB__ version  with the following: __monogodb__ dbuser/dbpass, admin pass: __admin__ and __sampledb__ as database 
+  (you can create this application from local repository or from public:
+   oc new-app -e MONGODB_USER=mongodb -e MONGODB_PASSWORD=mongodb -e MONGODB_DATABASE=sampledb -e MONGODB_ADMIN_PASSWORD=admin centos/mongodb-32-centos7
+   )
 Connect to pod via terminal and execute the following:
 
 <code>
