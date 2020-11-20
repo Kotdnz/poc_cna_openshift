@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: prod-frontend
-        image: cna-prod-fe:0.1
+        image: cna-prod-fe:0.2
         ports:
         - containerPort: 8083
 ---

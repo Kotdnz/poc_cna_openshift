@@ -24,6 +24,7 @@ spec:
         - name: config-volume
           configMap:
             name: prod-config
+  replicas: 1
   triggers:
     - type: ConfigChange 
   strategy: 
