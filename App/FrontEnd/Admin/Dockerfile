@@ -9,7 +9,7 @@ RUN rm -rf /usr/share/nginx/html/*
 
 COPY ./html/ /usr/share/nginx/html
 
-RUN chgrp -R root /var/cache/nginx /var/run /var/log/nginx && \
+RUN chgrp -R nginx /var/cache/nginx /var/run /var/log/nginx && \
     chmod -R 770 /var/cache/nginx /var/run /var/log/nginx
 
 EXPOSE 3002 8082
